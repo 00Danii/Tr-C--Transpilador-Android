@@ -1,18 +1,16 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import ParallaxScrollView from "@/components/parallax-scroll-view";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { Collapsible } from "@/components/ui/collapsible";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Fonts } from "@/constants/theme";
 
 export default function TabTwoScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
         <IconSymbol
           size={310}
@@ -20,79 +18,130 @@ export default function TabTwoScreen() {
           name="chevron.left.forwardslash.chevron.right"
           style={styles.headerImage}
         />
-      }>
+      }
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText
           type="title"
           style={{
             fontFamily: Fonts.rounded,
-          }}>
-          Explore
+          }}
+        >
+          Explorar
         </ThemedText>
       </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
+      <ThemedText>
+        Esta aplicación incluye un transpilador de código entre múltiples
+        lenguajes de programación.
+      </ThemedText>
+
+      <Collapsible title="¿Qué es un transpilador?">
         <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
+          Un transpilador es una herramienta que convierte código fuente de un
+          lenguaje de programación a otro. TR-C Transpilador puede convertir
+          código entre{" "}
+          <ThemedText type="defaultSemiBold">JavaScript</ThemedText>,{" "}
+          <ThemedText type="defaultSemiBold">Python</ThemedText>,{" "}
+          <ThemedText type="defaultSemiBold">Java</ThemedText>,{" "}
+          <ThemedText type="defaultSemiBold">PHP</ThemedText>,{" "}
+          <ThemedText type="defaultSemiBold">C++</ThemedText> y{" "}
+          <ThemedText type="defaultSemiBold">PSeInt</ThemedText>.
         </ThemedText>
       </Collapsible>
-      <Collapsible title="Images">
+
+      <Collapsible title="¿Cómo funciona?">
         <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
+          El proceso de transpilación se realiza en tres etapas principales:
         </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
+        <ThemedText>
+          1.{" "}
+          <ThemedText type="defaultSemiBold">
+            Análisis Léxico (Lexer)
+          </ThemedText>
+          : Convierte el código fuente en tokens.
+        </ThemedText>
+        <ThemedText>
+          2.{" "}
+          <ThemedText type="defaultSemiBold">
+            Análisis Sintáctico (Parser)
+          </ThemedText>
+          : Crea un Árbol de Sintaxis Abstracta (AST).
+        </ThemedText>
+        <ThemedText>
+          3.{" "}
+          <ThemedText type="defaultSemiBold">Generación de Código</ThemedText>:
+          Produce el código en el lenguaje de destino.
+        </ThemedText>
       </Collapsible>
-      <Collapsible title="Light and dark mode components">
+
+      <Collapsible title="Lenguajes soportados">
         <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
+          <ThemedText type="defaultSemiBold">JavaScript</ThemedText>: Lenguaje
+          de programación interpretado, principalmente usado para desarrollo
+          web.
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">Python</ThemedText>: Lenguaje de
+          programación de alto nivel, ideal para ciencia de datos y desarrollo
+          general.
+        </ThemedText>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">Java</ThemedText>: Lenguaje
+          orientado a objetos, muy popular en desarrollo empresarial.
+        </ThemedText>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">PHP</ThemedText>: Lenguaje
+          especialmente diseñado para desarrollo web del lado del servidor.
+        </ThemedText>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">C++</ThemedText>: Lenguaje de
+          programación de propósito general, extensión de C con orientación a
+          objetos.
+        </ThemedText>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">PSeInt</ThemedText>: Pseudolenguaje
+          en español para enseñanza de programación.
+        </ThemedText>
       </Collapsible>
-      <Collapsible title="Animations">
+
+      <Collapsible title="Características de la aplicación">
         <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
+          • <ThemedText type="defaultSemiBold">Interfaz intuitiva</ThemedText>:
+          Fácil de usar con áreas de código separadas.
         </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
+        <ThemedText>
+          • <ThemedText type="defaultSemiBold">Intercambio rápido</ThemedText>:
+          Botón para intercambiar lenguajes de origen y destino.
+        </ThemedText>
+        <ThemedText>
+          •{" "}
+          <ThemedText type="defaultSemiBold">Copia al portapapeles</ThemedText>:
+          Función para copiar el código resultante.
+        </ThemedText>
+        <ThemedText>
+          •{" "}
+          <ThemedText type="defaultSemiBold">
+            Soporte multiplataforma
+          </ThemedText>
+          : Funciona en iOS, Android y web.
+        </ThemedText>
+      </Collapsible>
+
+      <Collapsible title="Limitaciones">
+        <ThemedText>
+          • Solo convierte estructuras básicas como variables, funciones,
+          condicionales y bucles.
+        </ThemedText>
+        <ThemedText>
+          • No maneja librerías específicas de cada lenguaje.
+        </ThemedText>
+        <ThemedText>
+          • El código generado puede requerir ajustes manuales para casos
+          complejos.
+        </ThemedText>
+        <ThemedText>
+          • Está diseñado para fines educativos y prototipado rápido.
+        </ThemedText>
       </Collapsible>
     </ParallaxScrollView>
   );
@@ -100,13 +149,13 @@ export default function TabTwoScreen() {
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: '#808080',
+    color: "#808080",
     bottom: -90,
     left: -35,
-    position: 'absolute',
+    position: "absolute",
   },
   titleContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
   },
 });
