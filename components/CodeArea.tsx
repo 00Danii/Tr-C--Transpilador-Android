@@ -53,59 +53,34 @@ export function CodeArea({
   };
 
   // Función para resaltar sintaxis básica
-  const getHighlightedText = useMemo(() => {
-    if (!value || readOnly) return null;
+  const highlightedParts = useMemo(() => {
+    if (!value || !readOnly) return null;
 
     const keywords = getKeywordsForLanguage(language);
-    const commentRegex = /(\/\/.*$|\/\*[\s\S]*?\*\/|#.*$)/gm;
+    const parts: {
+      text: string;
+      type: "keyword" | "string" | "comment" | "number" | "normal";
+    }[] = [];
 
-    function parseText(
+    // Función para parsear keywords y números (dentro del useMemo para estabilidad)
+    const parseKeywordsAndNumbers = (
       text: string,
       keywords: string[]
     ): {
       text: string;
       type: "keyword" | "string" | "comment" | "number" | "normal";
-    }[] {
+    }[] => {
       const parts: {
         text: string;
         type: "keyword" | "string" | "comment" | "number" | "normal";
       }[] = [];
-      const stringRegex = /(["'`])(.*?)\1/g;
 
-      let lastIndex = 0;
-
-      // Procesar strings
-      const stringMatches = [...text.matchAll(stringRegex)];
-      stringMatches.forEach((match) => {
-        if (match.index! > lastIndex) {
-          const beforeText = text.slice(lastIndex, match.index);
-          parts.push(...parseKeywordsAndNumbers(beforeText, keywords));
-        }
-        parts.push({ text: match[0], type: "string" });
-        lastIndex = match.index! + match[0].length;
-      });
-
-      if (lastIndex < text.length) {
-        const remainingText = text.slice(lastIndex);
-        parts.push(...parseKeywordsAndNumbers(remainingText, keywords));
-      }
-
-      return parts;
-    }
-
-    function parseKeywordsAndNumbers(
-      text: string,
-      keywords: string[]
-    ): {
-      text: string;
-      type: "keyword" | "string" | "comment" | "number" | "normal";
-    }[] {
-      const parts: {
-        text: string;
-        type: "keyword" | "string" | "comment" | "number" | "normal";
-      }[] = [];
+      // Crear regex para keywords
+      const keywordRegex =
+        keywords.length > 0
+          ? new RegExp(`\\b(${keywords.join("|")})\\b`, "g")
+          : null;
       const numberRegex = /\b\d+(\.\d+)?\b/g;
-      const keywordRegex = new RegExp(`\\b(${keywords.join("|")})\\b`, "g");
 
       const allMatches: {
         index: number;
@@ -113,24 +88,28 @@ export function CodeArea({
         type: "keyword" | "number";
       }[] = [];
 
-      [...text.matchAll(keywordRegex)].forEach((match) => {
-        allMatches.push({
-          index: match.index!,
-          text: match[0],
-          type: "keyword",
-        });
-      });
+      // Encontrar keywords
+      if (keywordRegex) {
+        let match;
+        while ((match = keywordRegex.exec(text)) !== null) {
+          allMatches.push({
+            index: match.index,
+            text: match[0],
+            type: "keyword",
+          });
+        }
+      }
 
-      [...text.matchAll(numberRegex)].forEach((match) => {
-        allMatches.push({
-          index: match.index!,
-          text: match[0],
-          type: "number",
-        });
-      });
+      // Encontrar números
+      let match;
+      while ((match = numberRegex.exec(text)) !== null) {
+        allMatches.push({ index: match.index, text: match[0], type: "number" });
+      }
 
+      // Ordenar por posición
       allMatches.sort((a, b) => a.index - b.index);
 
+      // Crear partes
       let lastIndex = 0;
       allMatches.forEach((match) => {
         if (match.index > lastIndex) {
@@ -147,30 +126,64 @@ export function CodeArea({
       }
 
       return parts;
-    }
+    };
 
-    let parts: {
+    // Función para parsear partes del código (dentro del useMemo para estabilidad)
+    const parseCodeParts = (
+      text: string,
+      keywords: string[]
+    ): {
       text: string;
       type: "keyword" | "string" | "comment" | "number" | "normal";
-    }[] = [];
-    let lastIndex = 0;
+    }[] => {
+      const parts: {
+        text: string;
+        type: "keyword" | "string" | "comment" | "number" | "normal";
+      }[] = [];
 
-    // Procesar comentarios primero
-    const commentMatches = [...value.matchAll(commentRegex)];
-    commentMatches.forEach((match) => {
+      // Procesar strings primero
+      const stringRegex = /(["'`])(.*?)\1/g;
+      let lastIndex = 0;
+      let match;
+
+      while ((match = stringRegex.exec(text)) !== null) {
+        // Agregar texto antes del string
+        if (match.index > lastIndex) {
+          const beforeText = text.slice(lastIndex, match.index);
+          parts.push(...parseKeywordsAndNumbers(beforeText, keywords));
+        }
+        parts.push({ text: match[0], type: "string" });
+        lastIndex = match.index + match[0].length;
+      }
+
+      // Procesar el resto
+      if (lastIndex < text.length) {
+        const remainingText = text.slice(lastIndex);
+        parts.push(...parseKeywordsAndNumbers(remainingText, keywords));
+      }
+
+      return parts;
+    };
+
+    // Procesar comentarios primero (// y /* */)
+    const commentRegex = /(\/\/.*$|\/\*[\s\S]*?\*\/|#.*$)/gm;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = commentRegex.exec(value)) !== null) {
       // Agregar texto antes del comentario
-      if (match.index! > lastIndex) {
+      if (match.index > lastIndex) {
         const beforeText = value.slice(lastIndex, match.index);
-        parts.push(...parseText(beforeText, keywords));
+        parts.push(...parseCodeParts(beforeText, keywords));
       }
       parts.push({ text: match[0], type: "comment" });
-      lastIndex = match.index! + match[0].length;
-    });
+      lastIndex = match.index + match[0].length;
+    }
 
     // Procesar el resto del texto
     if (lastIndex < value.length) {
       const remainingText = value.slice(lastIndex);
-      parts.push(...parseText(remainingText, keywords));
+      parts.push(...parseCodeParts(remainingText, keywords));
     }
 
     return parts;
@@ -363,32 +376,34 @@ export function CodeArea({
     return keywordMap[lang] || [];
   }
 
-  const getTextColor = (type: string) => {
+  const getTextColor = (
+    type: "keyword" | "string" | "comment" | "number" | "normal"
+  ) => {
     if (isDark) {
       switch (type) {
         case "keyword":
-          return "#569cd6"; // Azul para keywords
+          return "#569cd6";
         case "string":
-          return "#ce9178"; // Naranja para strings
+          return "#ce9178";
         case "comment":
-          return "#6a9955"; // Verde para comentarios
+          return "#6a9955";
         case "number":
-          return "#b5cea8"; // Verde claro para números
+          return "#b5cea8";
         default:
-          return "#d4d4d4"; // Gris claro para texto normal
+          return "#d4d4d4";
       }
     } else {
       switch (type) {
         case "keyword":
-          return "#0000ff"; // Azul para keywords
+          return "#0000ff";
         case "string":
-          return "#008000"; // Verde para strings
+          return "#008000";
         case "comment":
-          return "#008000"; // Verde para comentarios
+          return "#008000";
         case "number":
-          return "#ff6600"; // Naranja para números
+          return "#ff6600";
         default:
-          return "#000000"; // Negro para texto normal
+          return "#000000";
       }
     }
   };
@@ -421,7 +436,7 @@ export function CodeArea({
 
       {/* Code Input Area */}
       <View style={styles.codeContainer}>
-        {readOnly && getHighlightedText ? (
+        {readOnly && highlightedParts ? (
           <ScrollView
             style={styles.codeContainer}
             showsVerticalScrollIndicator={false}
@@ -432,13 +447,11 @@ export function CodeArea({
                 isDark && styles.highlightedTextDark,
               ]}
             >
-              {getHighlightedText.map(
-                (part: { text: string; type: string }, index: number) => (
-                  <Text key={index} style={{ color: getTextColor(part.type) }}>
-                    {part.text}
-                  </Text>
-                )
-              )}
+              {highlightedParts.map((part, index) => (
+                <Text key={index} style={{ color: getTextColor(part.type) }}>
+                  {part.text}
+                </Text>
+              ))}
             </Text>
           </ScrollView>
         ) : (
