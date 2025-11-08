@@ -65,7 +65,7 @@ Clona el repositorio:
 git clone https://github.com/00Danii/Tr-C--Transpilador-Android
 ```
 
-Instala dependencias con pnpm:
+Instala dependencias con npm:
 ```bash
 npm install
 ```
