@@ -1,4 +1,5 @@
 import { CodeArea } from "@/components/CodeArea";
+import { CustomAlert } from "@/components/CustomAlert"; // Agregar esta importación
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { SwapButton } from "@/components/SwapButton";
 import { ThemedText } from "@/components/themed-text";
@@ -10,7 +11,6 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import {
-  Alert,
   Dimensions,
   Platform,
   ScrollView,
@@ -31,6 +31,13 @@ export function CodeTranspiler() {
   const [codeByLanguage, setCodeByLanguage] = useState<{
     [lang: string]: string;
   }>({});
+  // Agregar estado para el CustomAlert
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState<"success" | "error" | "info">(
+    "info"
+  );
 
   const handleSwapLanguages = () => {
     const tempLang = inputLanguage;
@@ -48,7 +55,7 @@ export function CodeTranspiler() {
   const handleTranspile = async () => {
     if (!inputCode.trim()) {
       setError("Por favor, ingresa código para transpilar");
-      Alert.alert("Error", "Por favor, ingresa código para transpilar");
+      showAlert("Error", "Por favor, ingresa código para transpilar", "error");
       return;
     }
 
@@ -76,7 +83,7 @@ export function CodeTranspiler() {
       const errorMsg =
         "Error durante la transpilación. Por favor, verifica tu código.";
       setError(errorMsg);
-      Alert.alert("Error", errorMsg);
+      showAlert("Error", errorMsg, "error");
     } finally {
       setIsTranspiling(false);
     }
@@ -88,10 +95,22 @@ export function CodeTranspiler() {
 
     try {
       await Clipboard.setStringAsync(code);
-      Alert.alert("¡Copiado!", "Código copiado al portapapeles");
+      showAlert("¡Copiado!", "Código copiado al portapapeles", "success");
     } catch {
-      Alert.alert("Error", "No se pudo copiar el código");
+      showAlert("Error", "No se pudo copiar el código", "error");
     }
+  };
+
+  // Función para mostrar el CustomAlert
+  const showAlert = (
+    title: string,
+    message: string,
+    type: "success" | "error" | "info" = "info"
+  ) => {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertType(type);
+    setAlertVisible(true);
   };
 
   const getLanguageLabel = (value: string) => {
@@ -212,6 +231,15 @@ export function CodeTranspiler() {
           />
         </ThemedView>
       )}
+
+      {/* Custom Alert */}
+      <CustomAlert
+        visible={alertVisible}
+        title={alertTitle}
+        message={alertMessage}
+        type={alertType}
+        onClose={() => setAlertVisible(false)}
+      />
     </ScrollView>
   );
 }
