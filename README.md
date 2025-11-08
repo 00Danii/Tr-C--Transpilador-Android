@@ -1,53 +1,83 @@
-# Welcome to your Expo app 👋
+# TR-C Transpilador (Android)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Este proyecto es una **adaptación para Android** del repositorio original [TR-C Transpilador](https://github.com/00Danii/Tr-C--Transpilador).
 
-## Get started
+La versión web original permite la transpilación entre lenguajes de programación a través de una interfaz web, mientras que esta versión está optimizada para dispositivos móviles Android, manteniendo toda la funcionalidad principal.
 
-1. Install dependencies
+¡Pruébalo en línea! [TR-C Transpilador Web](https://tr-c-transpilador.vercel.app/)
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## ¿Qué es TR-C Transpilador?
 
-   ```bash
-   npx expo start
-   ```
+**TR-C Transpilador** es una herramienta que permite convertir código entre **JavaScript, PHP, Python, Java, C++ y PSeInt** de manera sencilla y rápida.  
+Convierte estructuras básicas de un lenguaje a otro, facilitando el **aprendizaje** y la **migración de código**.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Arquitectura
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+El proyecto está construido en varias capas principales:
 
-## Get a fresh project
+- **Lexer (Analizador Léxico):**  
+  Convierte el código fuente en una secuencia de tokens (palabras clave, identificadores, operadores, etc.).
 
-When you're ready, run:
+- **Parser (Analizador Sintáctico):**  
+  Toma los tokens y construye un **AST** (Árbol de Sintaxis Abstracta) que representa la estructura lógica del código.
 
-```bash
-npm run reset-project
+- **AST (Abstract Syntax Tree):**  
+  Representación intermedia, independiente del lenguaje, que describe la estructura y significado del código fuente.
+
+- **Generadores de código:**  
+  Cada lenguaje de salida tiene su propio generador que toma el AST y produce código en ese lenguaje.
+
+## Diagrama arquitectónico
+![Diagrama del transpilador](https://i.imgur.com/oSQbvtF.png)
+
+## ¿Cómo funciona la transpilación?
+
+1. **Lexer:**  
+   El código fuente se tokeniza en unidades léxicas.
+
+2. **Parser:**  
+   Los tokens se analizan y se construye el AST.
+
+3. **Generador:**  
+   El AST se recorre y se genera el código en el lenguaje de destino.
+
+### Ejemplo:
+
+```js
+// Entrada (JavaScript)
+console.log("Hola mundo");
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+```python
+# Salida (Python)
+print("Hola mundo")
+```
 
-## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
+## ¿Cómo replicarlo localmente?
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Clona el repositorio:
+```bash
+git clone https://github.com/00Danii/Tr-C--Transpilador-Android
+```
 
-## Join the community
+Instala dependencias con pnpm:
+```bash
+npm install
+```
 
-Join our community of developers creating universal apps.
+Inicia la app en modo desarrollo:
+```bash
+npx expo start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-
-para exportar a un apk
+## Exportar a APK
+Para generar un APK para Android:
+```bash
 npx eas-cli build --platform android --profile preview
+```
+Esto creará un enlace para descargar el APK listo para instalar en dispositivos Android.
