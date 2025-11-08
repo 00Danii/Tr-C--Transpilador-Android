@@ -477,7 +477,14 @@ export function CodeArea({
 
         {/* Transpiling Overlay */}
         {isTranspiling && readOnly && (
-          <View style={styles.transpilingOverlay}>
+          <View
+            style={[
+              styles.transpilingOverlay,
+              isDark
+                ? styles.transpilingOverlayDark
+                : styles.transpilingOverlayLight,
+            ]}
+          >
             <ActivityIndicator size="large" color="#3b82f6" />
             <ThemedText style={styles.transpilingText}>
               Transpilando código...
@@ -585,9 +592,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 1)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  transpilingOverlayDark: {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+  },
+  transpilingOverlayLight: {
+    backgroundColor: "rgba(255, 255, 255, 1)",
   },
   transpilingText: {
     marginTop: 12,
