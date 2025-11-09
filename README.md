@@ -6,6 +6,8 @@ La versión web original permite la transpilación entre lenguajes de programaci
 
 ¡Pruébalo en línea! [TR-C Transpilador Web](https://tr-c-transpilador.vercel.app/)
 
+¡Descarga la aplicación para Android! [TR-C Transpilador | APK](https://github.com/00Danii/Tr-C--Transpilador-Android/releases/tag/apk)
+
 ---
 
 ## ¿Qué es TR-C Transpilador?
